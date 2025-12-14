@@ -31,9 +31,13 @@ class RahkaranAuth:
         Initialize the authentication client.
         
         Args:
-            scripts_dir: Directory containing RSA JS files. Defaults to same dir as this file.
+            scripts_dir: Directory containing RSA JS files. Defaults to package directory.
         """
-        self.scripts_dir = Path(scripts_dir) if scripts_dir else Path(__file__).parent
+        if scripts_dir:
+            self.scripts_dir = Path(scripts_dir)
+        else:
+            # Default to the package directory where JS files are installed
+            self.scripts_dir = Path(__file__).parent
     
     def _extract_field(self, html: str, field_name: str) -> str:
         """Extract a hidden field value from HTML."""
