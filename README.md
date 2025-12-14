@@ -18,19 +18,24 @@ This library handles the full authentication flow for Rahkaran ERP systems:
 
 ## Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/mmdmirh/Rahkaran_login_webservice.git
-cd Rahkaran_login_webservice
+### Option 1: Install directly from GitHub (Recommended)
 
-# Install Python dependencies
-pip install -r requirements.txt
+```bash
+pip install git+https://github.com/mmdmirh/Rahkaran_login_webservice.git
 ```
 
-Or install as a package:
+### Option 2: Clone and install locally
 
 ```bash
+git clone https://github.com/mmdmirh/Rahkaran_login_webservice.git
+cd Rahkaran_login_webservice
 pip install .
+```
+
+### Option 3: Install dependencies only
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## Usage
