@@ -1,0 +1,3 @@
+include *.js
+include requirements.txt
+include README.md
