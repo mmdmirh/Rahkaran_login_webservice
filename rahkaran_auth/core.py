@@ -53,27 +53,12 @@ class RahkaranAuth:
     
     def _encrypt_password(self, password: str, rsa_e: str, rsa_m: str, session_id: str) -> str:
         """
-        Encrypt password using Node.js RSA implementation.
-        Password is encrypted as: sessionid + "--" + password
+        Encrypt ``sessionid--password`` exactly like the login page's RSA.js.
+        Pure Python (rsa_pure); no Node.js subprocess.
         """
-        script_path = self.scripts_dir / "rsa_encrypt.js"
-        
-        if not script_path.exists():
-            raise FileNotFoundError(f"RSA encryption script not found: {script_path}")
-        
-        result = subprocess.run(
-            ['node', str(script_path), password, rsa_e, rsa_m, session_id],
-            cwd=str(self.scripts_dir),
-            capture_output=True,
-            text=True,
-            timeout=10
-        )
-        
-        if result.returncode != 0:
-            raise RuntimeError(f"RSA encryption failed: {result.stderr}")
-        
-        return result.stdout.strip()
-    
+        from .rsa_pure import encrypt_password
+        return encrypt_password(password, rsa_e, rsa_m, session_id)
+
     def login(self, base_url: str, username: str, password: str) -> dict:
         """
         Authenticate to Rahkaran and return session info.
