@@ -153,16 +153,23 @@ class RahkaranAuth:
                 allow_redirects=True
             )
             
-            # Check success
-            if 'Login.aspx' not in response.url:
+            # Check success. Rahkaran cloud's central login redirects back to a
+            # ReturnUrl that is itself .../Authentication/Login.aspx, so the URL
+            # alone no longer tells success from failure: a failed attempt
+            # re-renders the login form (txtUsername / hashedPassword fields),
+            # a successful one does not.
+            error_msg = self._extract_field(response.text, 'errorMessage')
+            form_present = 'name="hashedPassword"' in response.text or 'id="txtUsername"' in response.text
+            result["final_url"] = response.url
+            result["form_present"] = form_present
+            if not error_msg and not form_present:
                 result["success"] = True
                 result["cookies"] = session.cookies.get_dict()
                 result["cookie_header"] = "; ".join(
                     f"{k}={v}" for k, v in result["cookies"].items()
                 )
             else:
-                error_msg = self._extract_field(response.text, 'errorMessage')
-                result["error"] = error_msg or "Login failed"
+                result["error"] = error_msg or f"Login failed (final_url={response.url}, form_present={form_present}, cookies={sorted(session.cookies.get_dict())})"
                 
         except Exception as e:
             result["error"] = str(e)
